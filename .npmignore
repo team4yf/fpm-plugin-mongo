@@ -4,3 +4,4 @@ sql/
 views/
 db.lock
 .babelrc
+*.yml

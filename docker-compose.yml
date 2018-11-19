@@ -1,8 +1,8 @@
 version: '3.1'  # 与镜像有关，这里只支持3.1
 services:
   mongo:  # 会自动从Docker Hub上自动获取mongo这个镜像
+    image: 'mongo'
     container_name: 'mongo_server'
-    build: ./
     restart: always
     ports:
       - 27017:27017  # 本地端口(可自定义):容器内默认端口(mongo设定为27017)
@@ -11,3 +11,16 @@ services:
     environment:  # admin账号和密码
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
+  manager:
+    image: 'mrvautin/adminmongo'
+    restart: always
+    ports:
+      - 1234:1234
+    environment:
+      CONN_NAME: manager
+      DB_USERNAME: admin
+      DB_PASSWORD: admin
+      DB_HOST: mongo
+      DB_PORT: 27017
+    depends_on:
+      - 'mongo'

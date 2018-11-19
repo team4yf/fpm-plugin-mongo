@@ -9,13 +9,11 @@
     "dev": "./node_modules/.bin/nodemon dev/dev.js",
     "test": "./node_modules/.bin/mocha test/*.test.js",
     "docker": "docker-compose up --build -d",
-    "docker:shell": "docker exec -it mongo_server /bin/bash",
-    "mongo": "mongo --host mongodb://admin:admin@localhost"
+    "docker:down": "docker-compose down"
   },
   "author": "yfsoftcom",
   "license": "ISC",
   "dependencies": {
-    "bluebird": "^3.5.3",
     "lodash": "^4.17.4",
     "mongodb": "^3.1.10"
   },
