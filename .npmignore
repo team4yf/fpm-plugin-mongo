@@ -1,0 +1,6 @@
+src/
+dev/
+sql/
+views/
+db.lock
+.babelrc
