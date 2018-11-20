@@ -23,6 +23,7 @@ describe('Function', function(){
       
       // ref.use({ dbname: 'testDB' });
       setTimeout( () => {
+        ref.use({ dbname: 'ddd' })
         // console.log(ref);
         for(let i = 0; i < 10; i++)
           ref.create({ collection: 'foo', row: { name: 'bar1', i, v: Math.random(10) } });

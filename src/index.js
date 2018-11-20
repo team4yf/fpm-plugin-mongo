@@ -15,7 +15,8 @@ module.exports = {
         auth: {
           user: 'admin',
           password: 'admin',
-        }
+        },
+        default: 'testDB',
       })
       MongoClient.connect(`mongodb://${ config.auth.user }:${ config.auth.password }@${ config.host }:${ config.port }`, {
         poolSize: config.poolSize || 5,
@@ -26,6 +27,9 @@ module.exports = {
       })
         .then( client => {
           Vars.client = client;
+          if(config.default){
+            Vars.db = client.db(config.default);
+          }          
         })
         .catch( err => {
           fpm.logger.error('Mongodb Connect Error:', err);
@@ -37,13 +41,13 @@ module.exports = {
             return 1;
           },
           collection: args => {
-            const { dbname = 'testDB', collection } = args;
-            db = Vars.client.db(dbname);
+            const { dbname, collection } = args;
+            const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             return db.collection(collection);
           },
           find: async args => {
-            const { dbname = 'testDB', condition = {}, collection, limit = 0, skip = 0, sort = 'id-' } = args;
-            db = Vars.client.db(dbname);
+            const { dbname, condition = {}, collection, limit = 0, skip = 0, sort = 'id-' } = args;
+            const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             const c = db.collection(collection);
             try {
               // split ',' the sort ; _id-,name+
@@ -61,8 +65,8 @@ module.exports = {
             }
           },
           first: async args => {
-            const { dbname = 'testDB', condition = {}, collection, limit = 0, skip = 0, sort = 'id-' } = args;
-            db = Vars.client.db(dbname);
+            const { dbname, condition = {}, collection, limit = 0, skip = 0, sort = 'id-' } = args;
+            const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             const c = db.collection(collection);
             try {
               // split ',' the sort ; _id-,name+
@@ -80,8 +84,8 @@ module.exports = {
             }
           },
           create: async args => {
-            const { dbname = 'testDB', row, collection } = args;
-            db = Vars.client.db(dbname);
+            const { dbname, row, collection } = args;
+            const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
               const { insertedId } = await db.collection(collection).insertOne(row);
               return Object.assign( row, { _id: insertedId });
@@ -90,8 +94,8 @@ module.exports = {
             }
           },
           batch: async args => {
-            const { dbname = 'testDB', rows, collection } = args;
-            db = Vars.client.db(dbname);
+            const { dbname, rows, collection } = args;
+            const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
               const { result } = await db.collection(collection).insertMany(rows);
               return result;
@@ -100,8 +104,8 @@ module.exports = {
             }
           },
           save: async args => {
-            const { dbname = 'testDB', id, row = {}, collection } = args;
-            db = Vars.client.db(dbname);
+            const { dbname, id, row = {}, collection } = args;
+            const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
               const { result } = await db.collection(collection).updateOne({ _id: new ObjectID(id) }, { $set: row });
               if(result.n == 1){
@@ -113,8 +117,8 @@ module.exports = {
             }
           },
           update: async args => {
-            const { dbname = 'testDB', condition = {}, row = {}, collection } = args;
-            db = Vars.client.db(dbname);
+            const { dbname, condition = {}, row = {}, collection } = args;
+            const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
               const { result } = await db.collection(collection).updateMany(condition, { $set: row });
               return result;
@@ -123,8 +127,8 @@ module.exports = {
             }
           },
           remove: async args => {
-            const { dbname = 'testDB', id, collection } = args;
-            db = Vars.client.db(dbname);
+            const { dbname, id, collection } = args;
+            const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
               const { result } = await db.collection(collection).deleteOne({ _id: new ObjectID(id)});
               if(result.n == 1){
@@ -136,8 +140,8 @@ module.exports = {
             }
           },
           clean: async args => {
-            const { dbname = 'testDB', condition = {}, collection } = args;
-            db = Vars.client.db(dbname);
+            const { dbname, condition = {}, collection } = args;
+            const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
               const { result } = await db.collection(collection).deleteMany(condition);
               return result ;
@@ -146,8 +150,8 @@ module.exports = {
             }
           },
           get: async args => {
-            const { dbname = 'testDB', id, collection } = args;
-            db = Vars.client.db(dbname);
+            const { dbname, id, collection } = args;
+            const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
               const data = await db.collection(collection).findOne({ _id: new ObjectID(id)});
               if(data){
@@ -159,8 +163,8 @@ module.exports = {
             }
           },
           count: async args => {
-            const { dbname = 'testDB', condition = {}, collection } = args;
-            db = Vars.client.db(dbname);
+            const { dbname, condition = {}, collection } = args;
+            const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
               const data = await db.collection(collection).estimatedDocumentCount(condition);
               return { count: data } ;
