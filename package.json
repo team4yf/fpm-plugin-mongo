@@ -9,7 +9,9 @@
     "dev": "./node_modules/.bin/nodemon dev/dev.js",
     "test": "./node_modules/.bin/mocha test/*.test.js",
     "docker": "docker-compose up --build -d",
-    "docker:down": "docker-compose down"
+    "docker:down": "docker-compose down",
+    "backup": "docker exec mongo_server bash -c \"mongodump -u admin -p admin --authenticationDatabase admin -o /backup/dump  && tar -C /backup/dump -zcvf /backup/all.tar.gz . && rm -rf /backup/dump/*\"",
+    "restore": "docker exec mongo_server bash -c \"tar -C /backup/store -zxvf /backup/all.tar.gz && mongorestore -u admin -p admin --authenticationDatabase admin --drop /backup/store/ && rm -rf /backup/store/*\""
   },
   "author": "yfsoftcom",
   "license": "ISC",

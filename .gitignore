@@ -24,3 +24,5 @@ views/
 key.js
 db.lock
 config.json
+data/
+backup/

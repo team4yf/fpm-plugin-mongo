@@ -88,3 +88,35 @@ npm add fpm-plugin-mongo --save
       }
       //*/
     ```
+
+### Backup the db
+```bash
+# run docker exec
+
+docker exec -it mongo_server /bin/bash
+
+# mongodump -h 127.0.0.1 --port 27017 -u [user] -p [pass] -d [dbname] -o /backup/dump --authenticationDatabase admin
+# tar -zcvf testDB.tar.gz /backup/dump/testDB
+# remove the dir
+mongodump -u admin -p admin --authenticationDatabase admin -o /backup/dump  \
+&& tar -C /backup/dump -zcvf /backup/all.tar.gz . \
+&& rm -rf /backup/dump/*
+
+```
+### Store the db
+
+注：
+
+1、mongorestore恢复数据默认是追加，如打算先删除后导入，可以加上--drop参数，不过添加--drop参数后，会将数据库数据清空后再导入，如果数据库备份后又新加入了数据，也会将新加的数据删除，它不像mysql有一个存在的判断。
+
+```bash
+# run docker exec
+
+docker exec -it mongo_server /bin/bash
+
+# unzip && restore all dbs
+tar -C /backup/store -zxvf /backup/all.tar.gz \
+&& mongorestore -u admin -p admin --authenticationDatabase admin --drop /backup/store/  \
+&& rm -rf /backup/store/*
+
+```

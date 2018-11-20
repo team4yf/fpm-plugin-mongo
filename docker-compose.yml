@@ -4,6 +4,11 @@ services:
     image: 'mongo'
     container_name: 'mongo_server'
     restart: always
+    volumes:
+      - ./data:/data/db/
+      # - ./backup/dump:/backup/dump/
+      - ./backup/store:/backup/store/
+      - ./backup/:/backup/
     ports:
       - 27017:27017  # 本地端口(可自定义):容器内默认端口(mongo设定为27017)
     # volumes:

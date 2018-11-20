@@ -38,6 +38,9 @@ describe('Function', function(){
   after(done => {
     // shutdown the server
     done()
+    setTimeout( () =>{
+      process.exit();
+    }, 1000);
   })
 
   it('Function find', function(done){
@@ -138,5 +141,4 @@ describe('Function', function(){
       })
       .catch( done );
   })
-
 })

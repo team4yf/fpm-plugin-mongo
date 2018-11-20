@@ -5,3 +5,5 @@ views/
 db.lock
 .babelrc
 *.yml
+data/
+backup/

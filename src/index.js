@@ -22,9 +22,7 @@ module.exports = {
         auto_reconnect: true,
         socketTimeoutMS: 500,
         numberOfRetries: 3,
-        retryMiliSeconds: 500,
-        useNewUrlParser: true
-        // auth: config.auth,
+        useNewUrlParser: true,
       })
         .then( client => {
           Vars.client = client;
@@ -34,9 +32,14 @@ module.exports = {
         })
 
         _.extend(obj, {
-          use: async args => {
+          use: args => {
             Vars.db = Vars.client.db(args.dbname);
             return 1;
+          },
+          collection: args => {
+            const { dbname = 'testDB', collection } = args;
+            db = Vars.client.db(dbname);
+            return db.collection(collection);
           },
           find: async args => {
             const { dbname = 'testDB', condition = {}, collection, limit = 0, skip = 0, sort = 'id-' } = args;
@@ -106,7 +109,6 @@ module.exports = {
               }
               return Promise.reject({ errno: -2, message: `ObjectID: ${ id } not existed` });
             } catch (error) {
-              console.log(error)
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
@@ -172,7 +174,6 @@ module.exports = {
               const rows = await obj.find(args);
               return { count, rows } ;
             } catch (error) {
-              console.log(error)
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
@@ -180,7 +181,8 @@ module.exports = {
     });
 
     fpm.registerAction('BEFORE_SERVER_START', () => {
-      fpm.extendModule('mongo', obj)
+      fpm.extendModule('mongo', obj);
+      fpm.MONGO = obj;
     })
 
     return obj;
