@@ -1,6 +1,6 @@
 {
   "name": "fpm-plugin-mongo",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "A Plugin Named [fpm-plugin-mongo] For YF-FPM-SERVER~",
   "main": "lib/index.js",
   "scripts": {

@@ -1,6 +1,32 @@
 const _ = require('lodash');
 const { MongoClient, ObjectID } = require('mongodb');
 
+const makeProjection = projection => {
+  if(projection == '*' || projection == ''){
+    return;
+  }else{
+    if(_.isPlainObject(projection)){
+      return projection;
+    }else if(_.isString(projection)){
+      const projectionObj = {};
+      _.map(projection.split(','), p => {
+        projectionObj[p] = 1;
+      });
+      return projectionObj;
+    }
+  }
+}
+
+const makeSort = sort => {
+  // split ',' the sort ; _id-,name+
+  return _.map(sort.split(','), item => {
+    if(_.endsWith(item, '+')){
+      return  [ _.trimEnd(item, '+'), 1 ];
+    }
+    return [ _.trimEnd(item, '-'), -1 ];
+  })
+}
+
 module.exports = {
   bind: (fpm) => {
 
@@ -46,18 +72,16 @@ module.exports = {
             return db.collection(collection);
           },
           find: async args => {
-            const { dbname, condition = {}, collection, limit = 0, skip = 0, sort = 'id-' } = args;
+            // projection
+            const { dbname, condition = {}, collection, limit = 0, skip = 0, sort = 'id-', fields = '*' } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             const c = db.collection(collection);
             try {
-              // split ',' the sort ; _id-,name+
-              const sortArr = _.map(sort.split(','), item => {
-                if(_.endsWith(item, '+')){
-                  return  [ _.trimEnd(item, '+'), 1 ];
-                }
-                return [ _.trimEnd(item, '-'), -1 ];
-              })
-              const options = { limit, skip, sort: sortArr };
+              const options = { limit, skip, sort: makeSort(sort) };
+              const projection = makeProjection(args.projection || fields)
+              if(projection){
+                options.projection = projection;
+              }
               const rows = await c.find(condition, options).toArray();
               return rows ;
             } catch (error) {
@@ -65,20 +89,17 @@ module.exports = {
             }
           },
           first: async args => {
-            const { dbname, condition = {}, collection, limit = 0, skip = 0, sort = 'id-' } = args;
+            const { dbname, condition = {}, collection, limit = 0, skip = 0, sort = 'id-', fields = '*' } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             const c = db.collection(collection);
             try {
-              // split ',' the sort ; _id-,name+
-              const sortArr = _.map(sort.split(','), item => {
-                if(_.endsWith(item, '+')){
-                  return  [ _.trimEnd(item, '+'), 1 ];
-                }
-                return [ _.trimEnd(item, '-'), -1 ];
-              })
-              const options = { limit, skip, sort: sortArr };
+              const options = { limit, skip, sort: makeSort(sort) };
+              const projection = makeProjection(args.projection || fields)
+              if(projection){
+                options.projection = projection;
+              }
               const data = await c.findOne(condition, options);
-              return { data } ;
+              return data ;
             } catch (error) {
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
@@ -150,10 +171,15 @@ module.exports = {
             }
           },
           get: async args => {
-            const { dbname, id, collection } = args;
+            const { dbname, id, collection, fields = '*' } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
-              const data = await db.collection(collection).findOne({ _id: new ObjectID(id)});
+              const options = { };
+              const projection = makeProjection(args.projection || fields)
+              if(projection){
+                options.projection = projection;
+              }
+              const data = await db.collection(collection).findOne({ _id: new ObjectID(id)}, options);
               if(data){
                 return data;
               }
@@ -166,15 +192,15 @@ module.exports = {
             const { dbname, condition = {}, collection } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
-              const data = await db.collection(collection).estimatedDocumentCount(condition);
-              return { count: data } ;
+              const data = await db.collection(collection).countDocuments(condition);
+              return data ;
             } catch (error) {
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
           findAndCount: async args => {
             try {
-              const { count } = await obj.count(args);
+              const count = await obj.count(args);
               const rows = await obj.find(args);
               return { count, rows } ;
             } catch (error) {

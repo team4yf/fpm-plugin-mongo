@@ -89,6 +89,11 @@ npm add fpm-plugin-mongo --save
       //*/
     ```
 
+### Mongodb Manual
+
+
+
+
 ### Backup the db
 ```bash
 # run docker exec
