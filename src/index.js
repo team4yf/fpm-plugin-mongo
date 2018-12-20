@@ -121,12 +121,10 @@ module.exports = {
           batch: async args => {
             const { dbname, rows, collection } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
-            console.log(args)
             try {
               const { result } = await db.collection(collection).insertMany(rows);
               return result;
             } catch (error) {
-              console.log(error)
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
