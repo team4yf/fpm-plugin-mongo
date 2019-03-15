@@ -1,11 +1,9 @@
 {
   "name": "fpm-plugin-mongo",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Plugin Named [fpm-plugin-mongo] For YF-FPM-SERVER~",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "scripts": {
-    "compile": "./node_modules/.bin/babel -d lib/ src/",
-    "prepublishOnly": "npm run compile",
     "dev": "./node_modules/.bin/nodemon dev/dev.js",
     "test": "./node_modules/.bin/mocha test/*.test.js",
     "docker": "docker-compose up --build -d",
@@ -20,14 +18,7 @@
     "mongodb": "^3.1.10"
   },
   "devDependencies": {
-    "babel-cli": "^6.22.2",
-    "babel-core": "^6.14.0",
-    "babel-plugin-transform-runtime": "^6.0.0",
-    "babel-polyfill": "^6.13.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-register": "^6.14.0",
     "babel-runtime": "^6.0.0",
-    "chai": "^3.5.0",
     "mocha": "^3.2.0",
     "nodemon": "^1.11.0",
     "yf-fpm-client-js": "^1.0.2",
