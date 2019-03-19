@@ -58,7 +58,8 @@ module.exports = {
             Vars.db = client.db(config.default);
           }          
         })
-        .catch( err => {
+        .catch( error => {
+          debug('[Init] => Mongodb Connect Error: % O', error)
           fpm.logger.error('Mongodb Connect Error:', err);
         })
 
@@ -73,6 +74,7 @@ module.exports = {
             return db.collection(collection);
           },
           find: async args => {
+            debug('[find] => Arguments: % O', args)
             // projection
             const { dbname, condition = {}, collection, limit = 0, skip = 0, sort = 'id-', fields = '*' } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
@@ -86,10 +88,12 @@ module.exports = {
               const rows = await c.find(condition, options).toArray();
               return rows ;
             } catch (error) {
+              debug('[find] => ERROR: % O', error)
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
           first: async args => {
+            debug('[first] => Arguments: % O', args)
             const { dbname, condition = {}, collection, limit = 0, skip = 0, sort = 'id-', fields = '*' } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             const c = db.collection(collection);
@@ -106,30 +110,36 @@ module.exports = {
               }
               return data ;
             } catch (error) {
+              debug('[first] => ERROR: % O', error)
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
           create: async args => {
+            debug('[create] => Arguments: % O', args)
             const { dbname, row, collection } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
               const { insertedId } = await db.collection(collection).insertOne(row);
               return Object.assign( row, { _id: insertedId });
             } catch (error) {
+              debug('[create] => ERROR: % O', error)
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
           batch: async args => {
+            debug('[batch] => Arguments: % O', args)
             const { dbname, rows, collection } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
               const { result } = await db.collection(collection).insertMany(rows);
               return result;
             } catch (error) {
+              debug('[batch] => ERROR: % O', error)
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
           save: async args => {
+            debug('[save] => Arguments: % O', args)
             const { dbname, id, row = {}, collection } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
@@ -139,20 +149,24 @@ module.exports = {
               }
               return Promise.reject({ errno: -2, message: `ObjectID: ${ id } not existed` });
             } catch (error) {
+              debug('[save] => ERROR: % O', error)
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
           update: async args => {
+            debug('[update] => Arguments: % O', args)
             const { dbname, condition = {}, row = {}, collection } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
               const { result } = await db.collection(collection).updateMany(condition, { $set: row });
               return result;
             } catch (error) {
+              debug('[update] => ERROR: % O', error)
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
           remove: async args => {
+            debug('[remove] => Arguments: % O', args)
             const { dbname, id, collection } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
@@ -162,20 +176,24 @@ module.exports = {
               }
               return Promise.reject({ errno: -2, message: `ObjectID: ${ id } not existed` });
             } catch (error) {
+              debug('[remove] => ERROR: % O', error)
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
           clean: async args => {
+            debug('[clean] => Arguments: % O', args)
             const { dbname, condition = {}, collection } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
               const { result } = await db.collection(collection).deleteMany(condition);
               return result ;
             } catch (error) {
+              debug('[clean] => ERROR: % O', error)
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
           get: async args => {
+            debug('[get] => Arguments: % O', args)
             const { dbname, id, collection, fields = '*' } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
@@ -190,16 +208,19 @@ module.exports = {
               }
               return Promise.reject({ errno: -2, message: `ObjectID: ${ id } not existed` });
             } catch (error) {
+              debug('[get] => ERROR: % O', error)
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
           count: async args => {
+            debug('[count] => Arguments: % O', args)
             const { dbname, condition = {}, collection } = args;
             const db = (dbname) ? Vars.client.db(dbname) : Vars.db;
             try {
               const data = await db.collection(collection).countDocuments(condition);
               return data ;
             } catch (error) {
+              debug('[count] => ERROR: % O', error)
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
@@ -210,6 +231,7 @@ module.exports = {
               const rows = await obj.find(args);
               return { count, rows } ;
             } catch (error) {
+              debug('[findAndCount] => ERROR: % O', error)
               return Promise.reject({ errno: -1, message: 'operate mongodb error', error });
             }
           },
