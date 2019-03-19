@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const { MongoClient, ObjectID } = require('mongodb');
+const debug = require('debug')('plugin-mongo');
 
 const makeProjection = projection => {
   if(projection == '*' || projection == ''){
@@ -203,6 +204,7 @@ module.exports = {
             }
           },
           findAndCount: async args => {
+            debug('[findAndCount] => Arguments: % O', args)
             try {
               const count = await obj.count(args);
               const rows = await obj.find(args);

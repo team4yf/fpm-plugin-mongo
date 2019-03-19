@@ -1,6 +1,6 @@
 {
   "name": "fpm-plugin-mongo",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "A Plugin Named [fpm-plugin-mongo] For YF-FPM-SERVER~",
   "main": "src/index.js",
   "scripts": {
@@ -14,14 +14,15 @@
   "author": "yfsoftcom",
   "license": "ISC",
   "dependencies": {
+    "debug": "^4.1.1",
     "lodash": "^4.17.4",
     "mongodb": "^3.1.10"
   },
   "devDependencies": {
     "babel-runtime": "^6.0.0",
+    "fpmc-jssdk": "^1.0.4",
     "mocha": "^3.2.0",
     "nodemon": "^1.11.0",
-    "yf-fpm-client-js": "^1.0.2",
     "yf-fpm-server": "^2.5.0"
   }
 }

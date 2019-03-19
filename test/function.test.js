@@ -1,8 +1,7 @@
-const assert = require('assert');
 const _ = require('lodash');
-const fpmc = require("yf-fpm-client-js").default;
-const { Func } = fpmc;
-fpmc.init({appkey: '123123', masterKey: '123123', domain: 'http://localhost:9999'});
+const { init, Func } = require("fpmc-jssdk");
+const assert = require('assert');
+init({ appkey:'123123', masterKey:'123123', endpoint: 'http://localhost:9999/api' });
 
 const ran = _.random(20, 100);
 console.log('Mock data rows => ', ran)

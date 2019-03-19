@@ -26,3 +26,4 @@ db.lock
 config.json
 data/
 backup/
+*-lock.json
