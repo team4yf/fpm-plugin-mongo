@@ -6,7 +6,7 @@ Change
 
     do not auto connect the db when it's setted by `false`. 
 
-  - connstr: `mongodb://admin:admin@localhost/testDB`
+  - connstr: `mongodb://admin:admin@localhost`
 
 - add `connect(connstr)`
 
