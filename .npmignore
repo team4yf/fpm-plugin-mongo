@@ -5,3 +5,4 @@ db.lock
 *.yml
 data/
 backup/
+config.json
