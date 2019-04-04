@@ -1,6 +1,6 @@
 {
   "name": "fpm-plugin-mongo",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A Plugin Named [fpm-plugin-mongo] For YF-FPM-SERVER~",
   "main": "src/index.js",
   "scripts": {
@@ -23,6 +23,6 @@
     "fpmc-jssdk": "^1.0.7",
     "mocha": "^3.2.0",
     "nodemon": "^1.11.0",
-    "yf-fpm-server": "^2.5.0"
+    "yf-fpm-server": "^2.5.4"
   }
 }

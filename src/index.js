@@ -60,7 +60,7 @@ module.exports = {
         })
         .catch( error => {
           debug('[Init] => Mongodb Connect Error: %O', error)
-          fpm.logger.error('Mongodb Connect Error:', err);
+          fpm.logger.error('Mongodb Connect Error:', error);
         })
 
         _.extend(obj, {
