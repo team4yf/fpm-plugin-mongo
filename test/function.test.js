@@ -6,22 +6,26 @@ init({ appkey:'123123', masterKey:'123123', endpoint: 'http://localhost:9999/api
 const ran = _.random(20, 100);
 console.log('Mock data rows => ', ran)
 describe('Function', function(){
-  before(done => {
-    
-    const rows = _.map(Array(ran), (row, i) => {
-      return {
-        name: `Name:${_.random(0, ran)}`,
-        i,
-      }
-    })
-    new Func('mongo.batch')
-      .invoke({ collection: 'foo', rows })
-      .then( data => {
-        assert.strictEqual(data.ok, 1, '')
-        assert.strictEqual(data.n, ran, '')
-        done();
+  before(async() => {
+    try {
+      // const code = await new Func('mongo.connect').invoke({
+      //   connstr: 'mongodb://admin:admin@localhost:27017',
+      //   db: 'testDD',
+      // })
+      // assert(code === 1);
+
+      const rows = _.map(Array(ran), (row, i) => {
+        return {
+          name: `Name:${_.random(0, ran)}`,
+          i,
+        }
       })
-      .catch( done );
+      const data = await new Func('mongo.batch').invoke({ collection: 'foo', rows })
+      assert.strictEqual(data.ok, 1, '')
+      assert.strictEqual(data.n, ran, '')
+    } catch (error) {
+      throw error
+    }
   })
 
 

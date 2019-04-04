@@ -11,13 +11,11 @@ services:
       - ./backup/:/backup/
     ports:
       - 27017:27017  # 本地端口(可自定义):容器内默认端口(mongo设定为27017)
-    # volumes:
-    #   - ./setup:/docker-entrypoint-initdb.d/  # 本地文件路径:容器内映射路径
     environment:  # admin账号和密码
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
   manager:
-    image: 'mrvautin/adminmongo'
+    image: 'yfsoftcom/adminmongo'
     restart: always
     ports:
       - 1234:1234
